@@ -61,7 +61,7 @@ type Formatter struct {
 	fontFormat   FontFormat
 }
 
-func (f *Formatter) Format(w io.Writer, style *chroma.Style, iterator chroma.Iterator) (err error) {
+func (f *Formatter) Format(w io.Writer, style *chroma.Style, iterator chroma.Iterator, escape bool) (err error) {
 	f.writeSVG(w, style, iterator.Tokens())
 	return err
 }

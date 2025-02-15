@@ -28,7 +28,7 @@ func BenchmarkHTMLFormatter(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		it, err := lexers.Get("go").Tokenise(nil, "package main\nfunc main()\n{\nprintln(`hello world`)\n}\n")
 		assert.NoError(b, err)
-		err = formatter.Format(io.Discard, styles.Fallback, it)
+		err = formatter.Format(io.Discard, styles.Fallback, it, true)
 		assert.NoError(b, err)
 	}
 }
@@ -96,7 +96,7 @@ func TestTableLineNumberNewlines(t *testing.T) {
 	assert.NoError(t, err)
 
 	var buf bytes.Buffer
-	err = f.Format(&buf, styles.Fallback, it)
+	err = f.Format(&buf, styles.Fallback, it, true)
 	assert.NoError(t, err)
 
 	// Don't bother testing the whole output, just verify it's got line numbers
@@ -115,7 +115,7 @@ func TestTabWidthStyle(t *testing.T) {
 	assert.NoError(t, err)
 
 	var buf bytes.Buffer
-	err = f.Format(&buf, styles.Fallback, it)
+	err = f.Format(&buf, styles.Fallback, it, true)
 	assert.NoError(t, err)
 
 	assert.True(t, regexp.MustCompile(`<pre.*style=".*background-color:[^;]+;-moz-tab-size:4;-o-tab-size:4;tab-size:4;[^"]*".+`).MatchString(buf.String()))
@@ -127,7 +127,7 @@ func TestWithCustomCSS(t *testing.T) {
 	assert.NoError(t, err)
 
 	var buf bytes.Buffer
-	err = f.Format(&buf, styles.Fallback, it)
+	err = f.Format(&buf, styles.Fallback, it, true)
 	assert.NoError(t, err)
 
 	assert.True(t, regexp.MustCompile(`<span style="display:flex;display:inline;"><span><span style=".*">echo</span> FOO</span></span>`).MatchString(buf.String()))
@@ -142,7 +142,7 @@ func TestWithCustomCSSStyleInheritance(t *testing.T) {
 	assert.NoError(t, err)
 
 	var buf bytes.Buffer
-	err = f.Format(&buf, styles.Fallback, it)
+	err = f.Format(&buf, styles.Fallback, it, true)
 	assert.NoError(t, err)
 
 	assert.True(t, regexp.MustCompile(` <span style=".*;background:blue;color:tomato;">&#34;FOO&#34;</span>`).MatchString(buf.String()))
@@ -154,7 +154,7 @@ func TestWrapLongLines(t *testing.T) {
 	assert.NoError(t, err)
 
 	var buf bytes.Buffer
-	err = f.Format(&buf, styles.Fallback, it)
+	err = f.Format(&buf, styles.Fallback, it, true)
 	assert.NoError(t, err)
 
 	assert.True(t, regexp.MustCompile(`<pre.*style=".*white-space:pre-wrap;word-break:break-word;`).MatchString(buf.String()))
@@ -166,7 +166,7 @@ func TestHighlightLines(t *testing.T) {
 	assert.NoError(t, err)
 
 	var buf bytes.Buffer
-	err = f.Format(&buf, styles.Fallback, it)
+	err = f.Format(&buf, styles.Fallback, it, true)
 	assert.NoError(t, err)
 
 	assert.Contains(t, buf.String(), `<span class="line hl"><span class="cl">`)
@@ -178,7 +178,7 @@ func TestLineNumbers(t *testing.T) {
 	assert.NoError(t, err)
 
 	var buf bytes.Buffer
-	err = f.Format(&buf, styles.Fallback, it)
+	err = f.Format(&buf, styles.Fallback, it, true)
 	assert.NoError(t, err)
 
 	assert.Contains(t, buf.String(), `<span class="line"><span class="ln">1</span><span class="cl"><span class="nb">echo</span> FOO</span></span>`)
@@ -190,7 +190,7 @@ func TestPreWrapper(t *testing.T) {
 	assert.NoError(t, err)
 
 	var buf bytes.Buffer
-	err = f.Format(&buf, styles.Fallback, it)
+	err = f.Format(&buf, styles.Fallback, it, true)
 	assert.NoError(t, err)
 
 	assert.True(t, regexp.MustCompile("<body class=\"bg\">\n<pre.*class=\"chroma\"><code><span class=\"line\"><span class=\"cl\"><span class=\"nb\">echo</span> FOO</span></span></code></pre>\n</body>\n</html>").MatchString(buf.String()))
@@ -204,7 +204,7 @@ func TestLinkeableLineNumbers(t *testing.T) {
 	assert.NoError(t, err)
 
 	var buf bytes.Buffer
-	err = f.Format(&buf, styles.Fallback, it)
+	err = f.Format(&buf, styles.Fallback, it, true)
 	assert.NoError(t, err)
 
 	assert.Contains(t, buf.String(), `id="line1"><a style="outline:none;text-decoration:none;color:inherit" href="#line1">1</a>`)
@@ -217,7 +217,7 @@ func TestTableLinkeableLineNumbers(t *testing.T) {
 	assert.NoError(t, err)
 
 	var buf bytes.Buffer
-	err = f.Format(&buf, styles.Fallback, it)
+	err = f.Format(&buf, styles.Fallback, it, true)
 	assert.NoError(t, err)
 
 	assert.Contains(t, buf.String(), `id="line1"><a class="lnlinks" href="#line1">1</a>`)
@@ -264,7 +264,7 @@ func TestTableLineNumberSpacing(t *testing.T) {
 		it, err := lexers.Get("go").Tokenise(nil, "package main\nfunc main()\n{\nprintln(`hello world`)\n}\n")
 		assert.NoError(t, err)
 		var buf bytes.Buffer
-		err = f.Format(&buf, styles.Fallback, it)
+		err = f.Format(&buf, styles.Fallback, it, true)
 		assert.NoError(t, err, "Test Case %d", i)
 		assert.Contains(t, buf.String(), testCase.expectedBuf, "Test Case %d", i)
 	}
@@ -285,7 +285,7 @@ func TestWithPreWrapper(t *testing.T) {
 		assert.NoError(t, err)
 
 		var buf bytes.Buffer
-		err = f.Format(&buf, styles.Fallback, it)
+		err = f.Format(&buf, styles.Fallback, it, true)
 		assert.NoError(t, err)
 
 		return buf.String()
@@ -344,7 +344,7 @@ func TestReconfigureOptions(t *testing.T) {
 	assert.NoError(t, err)
 
 	var buf bytes.Buffer
-	err = f.Format(&buf, styles.Fallback, it)
+	err = f.Format(&buf, styles.Fallback, it, true)
 
 	assert.NoError(t, err)
 	assert.Equal(t, `<pre class="chroma"><code><span class="line"><span class="cl"><span class="nb">echo</span> FOO</span></span></code></pre>`, buf.String())

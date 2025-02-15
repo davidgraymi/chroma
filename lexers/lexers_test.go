@@ -23,7 +23,7 @@ func TestCompileAllRegexes(t *testing.T) {
 	for _, lexer := range lexers.GlobalLexerRegistry.Lexers {
 		it, err := lexer.Tokenise(nil, "")
 		assert.NoError(t, err, "%s failed", lexer.Config().Name)
-		err = formatters.NoOp.Format(io.Discard, styles.SwapOff, it)
+		err = formatters.NoOp.Format(io.Discard, styles.SwapOff, it, true)
 		assert.NoError(t, err, "%s failed", lexer.Config().Name)
 	}
 }
@@ -83,7 +83,7 @@ func FileTest(t *testing.T, lexer chroma.Lexer, sourceFile, expectedFilename str
 
 		// Use a bytes.Buffer to "render" the actual bytes
 		var actualBytes bytes.Buffer
-		err = formatters.JSON.Format(&actualBytes, nil, chroma.Literator(actualTokens...))
+		err = formatters.JSON.Format(&actualBytes, nil, chroma.Literator(actualTokens...), true)
 		assert.NoError(t, err)
 
 		expectedBytes, err := os.ReadFile(expectedFilename)

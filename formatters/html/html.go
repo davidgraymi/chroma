@@ -216,14 +216,14 @@ func (h highlightRanges) Len() int           { return len(h) }
 func (h highlightRanges) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 func (h highlightRanges) Less(i, j int) bool { return h[i][0] < h[j][0] }
 
-func (f *Formatter) Format(w io.Writer, style *chroma.Style, iterator chroma.Iterator) (err error) {
-	return f.writeHTML(w, style, iterator.Tokens())
+func (f *Formatter) Format(w io.Writer, style *chroma.Style, iterator chroma.Iterator, escape bool) (err error) {
+	return f.writeHTML(w, style, iterator.Tokens(), escape)
 }
 
 // We deliberately don't use html/template here because it is two orders of magnitude slower (benchmarked).
 //
 // OTOH we need to be super careful about correct escaping...
-func (f *Formatter) writeHTML(w io.Writer, style *chroma.Style, tokens []chroma.Token) (err error) { // nolint: gocyclo
+func (f *Formatter) writeHTML(w io.Writer, style *chroma.Style, tokens []chroma.Token, escape bool) (err error) { // nolint: gocyclo
 	css := f.styleCache.get(style, true)
 	if f.standalone {
 		fmt.Fprint(w, "<html>\n")
@@ -308,12 +308,15 @@ func (f *Formatter) writeHTML(w io.Writer, style *chroma.Style, tokens []chroma.
 		}
 
 		for _, token := range tokens {
-			html := html.EscapeString(token.String())
+			myhtml := token.String()
+			if escape {
+				myhtml = html.EscapeString(myhtml)
+			}
 			attr := f.styleAttr(css, token.Type)
 			if attr != "" {
-				html = fmt.Sprintf("<span%s>%s</span>", attr, html)
+				myhtml = fmt.Sprintf("<span%s>%s</span>", attr, myhtml)
 			}
-			fmt.Fprint(w, html)
+			fmt.Fprint(w, myhtml)
 		}
 
 		if !(f.preventSurroundingPre || f.inlineCode) {

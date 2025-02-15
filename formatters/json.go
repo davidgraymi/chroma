@@ -9,7 +9,7 @@ import (
 )
 
 // JSON formatter outputs the raw token structures as JSON.
-var JSON = Register("json", chroma.FormatterFunc(func(w io.Writer, s *chroma.Style, it chroma.Iterator) error {
+var JSON = Register("json", chroma.FormatterFunc(func(w io.Writer, s *chroma.Style, it chroma.Iterator, escape bool) error {
 	if _, err := fmt.Fprintln(w, "["); err != nil {
 		return err
 	}
