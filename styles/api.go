@@ -5,7 +5,7 @@ import (
 	"io/fs"
 	"sort"
 
-	"github.com/alecthomas/chroma/v2"
+	"github.com/davidgraymi/chroma/v2"
 )
 
 //go:embed *.xml
