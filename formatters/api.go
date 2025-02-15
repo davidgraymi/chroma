@@ -4,9 +4,9 @@ import (
 	"io"
 	"sort"
 
-	"github.com/alecthomas/chroma/v2"
-	"github.com/alecthomas/chroma/v2/formatters/html"
-	"github.com/alecthomas/chroma/v2/formatters/svg"
+	"github.com/davidgraymi/chroma/v2"
+	"github.com/davidgraymi/chroma/v2/formatters/html"
+	"github.com/davidgraymi/chroma/v2/formatters/svg"
 )
 
 var (
