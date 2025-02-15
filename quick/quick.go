@@ -40,5 +40,5 @@ func Highlight(w io.Writer, source, lexer, formatter, style string) error {
 	if err != nil {
 		return err
 	}
-	return f.Format(w, s, it)
+	return f.Format(w, s, it, true)
 }

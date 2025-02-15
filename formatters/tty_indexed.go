@@ -237,7 +237,7 @@ type indexedTTYFormatter struct {
 	table *ttyTable
 }
 
-func (c *indexedTTYFormatter) Format(w io.Writer, style *chroma.Style, it chroma.Iterator) (err error) {
+func (c *indexedTTYFormatter) Format(w io.Writer, style *chroma.Style, it chroma.Iterator, escape bool) (err error) {
 	theme := styleToEscapeSequence(c.table, style)
 	for token := it(); token != chroma.EOF; token = it() {
 		clr, ok := theme[token.Type]

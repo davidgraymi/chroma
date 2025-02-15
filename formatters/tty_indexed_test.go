@@ -26,7 +26,7 @@ func TestNoneColour(t *testing.T) {
 	err = formatter.Format(&stringBuilder, style, chroma.Literator(chroma.Token{
 		Type:  tokenType,
 		Value: "WORD",
-	}))
+	}), true)
 	assert.NoError(t, err)
 
 	// "178" = #d7af00 approximates #d0ab1e

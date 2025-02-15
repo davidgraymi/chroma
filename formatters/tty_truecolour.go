@@ -44,7 +44,7 @@ func writeToken(w io.Writer, formatting string, text string) {
 	}
 }
 
-func trueColourFormatter(w io.Writer, style *chroma.Style, it chroma.Iterator) error {
+func trueColourFormatter(w io.Writer, style *chroma.Style, it chroma.Iterator, escape bool) error {
 	style = clearBackground(style)
 	for token := it(); token != chroma.EOF; token = it() {
 		entry := style.Get(token.Type)
